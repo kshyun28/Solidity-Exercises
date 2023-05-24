@@ -18,6 +18,16 @@ contract ReducingPayout {
     }
 
     function withdraw() public {
-        // your code here
+        uint256 timeElapsed = block.timestamp - depositedTime;
+
+        if (timeElapsed < depositedTime + 1 days) {
+            uint256 etherDeduction = (timeElapsed * 0.0011574 ether) / 100;
+            uint256 etherToWithdraw = viewBalance() - etherDeduction;
+            msg.sender.call{value: etherToWithdraw}("");
+        }
+    }
+
+    function viewBalance() public view returns (uint256) {
+        return address(this).balance;
     }
 }
